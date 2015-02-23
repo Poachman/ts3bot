@@ -10,7 +10,7 @@
 
 "loopTime"  : 1,
 
-"idleCh" : 10,
+"idleCh" : 1,
 "idletime" : {
     "muted" : "600000",
     "deafened" : "300000",

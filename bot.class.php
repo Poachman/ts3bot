@@ -83,6 +83,8 @@
         }
 
         private function getNewServerInfo() {
+            $this->server->clientListReset();
+            $this->server->channelListReset();
             $this->clients = $this->server->clientList();
         }
 
@@ -110,13 +112,19 @@
 
         private function idleMove() {
             foreach($this->clients as $client) {
-                if($this->isIdle($client)) {
-                    $client->move($this->config['idleCh']);
+                if($client->getProperty("cid") != $this->config['idleCh']) {
+                    if($this->isIdle($client)) {
+                        $this->log($this->config);
+                        $client->move($this->config['idleCh']);
+                    }
+                } else {
+                    
                 }
             }
         }
 
         private function log($string, $level = 1, $cmd = false) {
+            if(!is_string($string)) $string = var_export($string, true);
             $string = date("m/d/y H:i:s - ") . $string;
             if($level > 0) {
                 echo $string . "\n";

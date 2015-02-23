@@ -3,5 +3,32 @@
 "pass"      : "",
 "address"   : "127.0.0.1",
 "port"      : "10011",
-"sport"     : "9987"
+"sport"     : "9987",
+
+"brain"     : "./botbrain",
+"logFile"   : "./log",
+
+"loopTime"  : 1,
+
+"idleCh" : 10,
+"idletime" : {
+    "muted" : "600000",
+    "deafened" : "300000",
+    "away" : "5000",
+    "normal" : "1200000",
+    "admin" : "1800000"
+},
+
+"lobbyCh" : "1",
+"idleCh" : "12",
+"botCh" : "12",
+"mainFnRoom" : "14",
+"channelAdminGroupId" : "5",
+"channelGuestGroupId" : "8",
+"channelBanGroupId" : "10",
+"botNickName" : "The Magical Bot",
+"fnRoomRestTime" : "90",
+"setNormalTime" : "7200",
+"NormalGroupId" : "7",
+"GuestGroupId" : "8",
 }

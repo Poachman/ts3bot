@@ -4,6 +4,7 @@
         private $config;
         private $server;
         private $clients;
+        private $lcid;
 
         public function tsbot($configFile = "./config.json") {
             if(file_exists($configFile)) {
@@ -67,9 +68,6 @@
         }
 
         private function tick() {
-
-//            $this->log(var_export($this->server->channelList(), true));
-
     		$brain = file($this->config['brain']);
     /*		foreach($brain as $command) {
     			$this->brainCommand($command);
@@ -114,11 +112,13 @@
             foreach($this->clients as $client) {
                 if($client->getProperty("cid") != $this->config['idleCh']) {
                     if($this->isIdle($client)) {
-                        $this->log($this->config);
+                        $this->lcid[$client->getProperty("cldbid")] = $client->getProperty("cid");
                         $client->move($this->config['idleCh']);
                     }
                 } else {
-                    
+                    if(!$this->isIdle($client)) {
+                        $client->move($this->lcid[$client->getProperty("cldbid")]);
+                    }
                 }
             }
         }

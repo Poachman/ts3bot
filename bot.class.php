@@ -6,9 +6,13 @@
 
         public function tsbot($configFile = "./config.json") {
             if(file_exists($configFile)) {
-                $this->config = json_decode(file_get_contents($configFile), true);
-                if($this->config === NULL) {
-                    die("Config file invalid");
+                if(is_readable($configFile)) {
+                    $this->config = json_decode(file_get_contents($configFile), true);
+                    if($this->config === NULL) {
+                        die("Config file invalid");
+                    }
+                } else {
+                    die("Config file can't be read");
                 }
             } else {
                 die("Config file doesn't exist");
@@ -18,10 +22,9 @@
         }
 
         private function connect() {
-            print_r($this->config);
             $this->server = TeamSpeak3::factory("serverquery://{$this->config['user']}:{$this->config['pass']}@{$this->config['address']}:{$this->config['port']}/?server_port={$this->config['sport']}");
+            // https://docs.planetteamspeak.com/ts3/php/framework/class_team_speak3___node___server.html
         }
-
 
         private function log($string, $level = 1, $cmd = false) {
             $string = date("m/d/y H:i:s - ") . $string;

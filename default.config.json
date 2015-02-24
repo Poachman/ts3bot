@@ -6,11 +6,15 @@
 "sport"     : "9987",
 
 "brain"     : "./botbrain",
-"logFile"   : "./log",
+"logFile"   : "./bot.log",
 
-"loopTime"  : 1,
+"loopTime"  : "1",
 
-"idleCh" : 1,
+"newFnRoomId" : "4",
+"fnRoomSpacerId" : "3",
+"fnRoomRestTime" : "90",
+
+"idleCh"    : "2",
 "idletime" : {
     "muted" : "600000",
     "deafened" : "300000",
@@ -19,16 +23,14 @@
     "admin" : "1800000"
 },
 
+
 "lobbyCh" : "1",
-"idleCh" : "12",
 "botCh" : "12",
-"mainFnRoom" : "14",
 "channelAdminGroupId" : "5",
 "channelGuestGroupId" : "8",
 "channelBanGroupId" : "10",
 "botNickName" : "The Magical Bot",
-"fnRoomRestTime" : "90",
 "setNormalTime" : "7200",
 "NormalGroupId" : "7",
-"GuestGroupId" : "8",
+"GuestGroupId" : "8"
 }

@@ -1,10 +1,12 @@
 <?php
-    require_once("libraries/TeamSpeak3/TeamSpeak3.php");
+    require_once("./libraries/TeamSpeak3/TeamSpeak3.php");
+    require_once("./functionRoom.class.php");
     class tsbot {
-        private $config;
+        public $config;
         private $server;
         private $clients;
         private $lcid;
+        private $functionRooms;
 
         public function tsbot($configFile = "./config.json") {
             if(file_exists($configFile)) {
@@ -61,6 +63,7 @@
 //    		$this->cmd("clientmove clid=" . $this->whoami[0]['client_id'] . " cid=" . $this->config['botCh']);
 
     		$this->getNewServerInfo();
+            $this->functionRooms = array();
         }
 
         private function deinit() {
@@ -74,8 +77,8 @@
     		}*/
     		$this->getNewServerInfo();
     		$this->idleMove();
-/*    		$this->functionRooms();
-    		$this->setNormalUsers();
+    		$this->functionRooms();
+/*    		$this->setNormalUsers();
     		$this->createList();
             */
         }
@@ -117,9 +120,22 @@
                     }
                 } else {
                     if(!$this->isIdle($client)) {
+                        // TODO: Check if channel exists still before moving them
                         $client->move($this->lcid[$client->getProperty("cldbid")]);
                     }
                 }
+            }
+        }
+
+        private function functionRooms() {
+            $functionRoom = $this->server->channelList(array("cid" => $this->config['newFnRoomId']))[$this->config['newFnRoomId']];
+
+            foreach($functionRoom->clientList() as $client) {
+                $this->functionRooms[] = new functionRoom($this->server, $client, $this);
+            }
+
+            foreach($this->functionRooms as $functionRoom) {
+                $functionRoom->tick();
             }
         }
 
@@ -127,7 +143,8 @@
             if(!is_string($string)) $string = var_export($string, true);
             $string = date("m/d/y H:i:s - ") . $string;
             if($level > 0) {
-                echo $string . "\n";
+                $string .= "\n";
+                echo $string;
                 explode("\n", $string);
                 if(file_exists($this->config['logFile'])) {
                     $log = file($this->config['logFile']);

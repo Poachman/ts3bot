@@ -5,8 +5,8 @@
         public $config;
         private $server;
         private $clients;
-        private $lcid;
-        private $functionRooms;
+        private $lcid = array();
+        private $functionRooms = array();
 
         public function tsbot($configFile = "./config.json") {
             if(file_exists($configFile)) {
@@ -63,7 +63,6 @@
 //    		$this->cmd("clientmove clid=" . $this->whoami[0]['client_id'] . " cid=" . $this->config['botCh']);
 
     		$this->getNewServerInfo();
-            $this->functionRooms = array();
         }
 
         private function deinit() {
@@ -111,6 +110,12 @@
             }
         }
 
+        private function isMuted($client) {
+            return $client->getProperty("client_away")
+                || $client->getProperty("client_input_muted")
+                || $client->getProperty("client_output_muted");
+        }
+
         private function idleMove() {
             foreach($this->clients as $client) {
                 if($client->getProperty("cid") != $this->config['idleCh']) {
@@ -119,9 +124,12 @@
                         $client->move($this->config['idleCh']);
                     }
                 } else {
-                    if(!$this->isIdle($client)) {
-                        // TODO: Check if channel exists still before moving them
-                        $client->move($this->lcid[$client->getProperty("cldbid")]);
+                    if(!$this->isIdle($client) && !$this->isMuted($client)) {
+                        if(array_key_exists($client->getProperty("cldbid"), $this->lcid)) {
+                            $client->move($this->lcid[$client->getProperty("cldbid")]);
+                        } else {
+                            $client->move($this->config['lobbyCh']);
+                        }
                     }
                 }
             }

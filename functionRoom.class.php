@@ -3,6 +3,7 @@
 		protected $channel;
 		protected $admin;
 		protected $bot;
+		protected $alive = true;
 
 		public function functionRoom($channelAdmin, &$bot) {
 			$this->bot = $bot;
@@ -19,11 +20,18 @@
 
 		public function tick() {
 			if($this->isDead()) {
+				$this->bot->log($this->channel->getProperty("channel_name") . " had died.");
+				$this->alive = false;
 				$this->delete();
 			}
 		}
 
+		public function isAlive() {
+			return $this->alive;
+		}
+
 		private function isDead() {
+			$this->bot->log("Idle: " . $this->channel->getProperty("seconds_empty"));
 			return $this->channel->getProperty("seconds_empty") > $this->bot->config['fnRoomRestTime'];
 		}
 

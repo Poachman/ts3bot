@@ -1,12 +1,14 @@
 <?php
 	require_once("./libraries/TeamSpeak3/TeamSpeak3.php");
 	require_once("./functionRoom.class.php");
+	require_once("./idleCheck.class.php");
 	class tsbot {
 		public $config;
 		public $server;
 		private $clients;
 		private $lcid = array();
 		private $functionRooms = array();
+		private $idleCheck = NULL;
 
 		public function tsbot($configFile = "./config.json") {
 			if(file_exists($configFile)) {
@@ -58,6 +60,7 @@
 		}
 
 		private function init() {
+			$this->idleCheck = new idleCheck($this);
 			// TODO - Change bot name & move bot to another cahnnel
 //			$this->cmd("clientupdate client_nickname=" . $this->escape($this->config['botNickName']));
 //			$this->cmd("clientmove clid=" . $this->whoami[0]['client_id'] . " cid=" . $this->config['botCh']);
@@ -91,53 +94,11 @@
 			$this->server->clientListReset();
 			$this->server->channelListReset();
 			$this->clients = $this->server->clientList();
-		}
-
-		private function isIdle($client) {
-			if($client->getProperty("client_type") === 0) {
-					$idletime = $this->config['idletime']['normal'];
-
-					if($client['client_channel_group_id'] == $this->config['channelAdminGroupId'])
-						$idletime = $this->config['idletime']['admin'];
-
-					if($client['client_input_muted'])
-						$idletime = $this->config['idletime']['muted'];
-
-					if($client['client_output_muted'])
-						$idletime = $this->config['idletime']['deafened'];
-
-					if($client['client_away'])
-						$idletime = $this->config['idletime']['away'];
-
-					return $idletime < $client->getProperty("client_idle_time");
-			} else {
-				return false;
-			}
-		}
-
-		private function isMuted($client) {
-			return $client->getProperty("client_away")
-				|| $client->getProperty("client_input_muted")
-				|| $client->getProperty("client_output_muted");
+			$this->log("Updated Server Info");
 		}
 
 		private function idleCheck() {
-			foreach($this->clients as $client) {
-				if($client->getProperty("cid") != $this->config['idleCh']) {
-					if($this->isIdle($client)) {
-						$this->lcid[$client->getProperty("cldbid")] = $client->getProperty("cid");
-						$client->move($this->config['idleCh']);
-					}
-				} else {
-					if(!($this->isIdle($client) || $this->isMuted($client))) {
-						if(array_key_exists($client->getProperty("cldbid"), $this->lcid)) {
-							$client->move($this->lcid[$client->getProperty("cldbid")]);
-						} else {
-							$client->move($this->config['lobbyCh']);
-						}
-					}
-				}
-			}
+			$this->idleCheck->tick($this->clients);
 		}
 
 		private function functionRooms() {
@@ -147,15 +108,19 @@
 				$this->functionRooms[] = new functionRoom($client, $this);
 			}
 
-			foreach($this->functionRooms as $functionRoom) {
-				$functionRoom->tick();
+			foreach($this->functionRooms as $roomId => $functionRoom) {
+				if($functionRoom->isAlive()) {
+					$functionRoom->tick();
+				} else {
+					unset($this->functionRooms[$roomId]);
+				}
 			}
 		}
 
-		public function log($string, $level = 1, $cmd = false) {
+		public function log($string, $level = 0, $cmd = false) {
 			if(!is_string($string)) $string = var_export($string, true);
 			$string = date("m/d/y H:i:s - ") . $string;
-			if($level > 0) {
+			if($level > 0 || $this->config['debug'] == true) {
 				$string .= "\n";
 				echo $string;
 				explode("\n", $string);

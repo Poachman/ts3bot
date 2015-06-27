@@ -2,6 +2,7 @@
 	require_once("./libraries/TeamSpeak3/TeamSpeak3.php");
 	require_once("./functionRoom.class.php");
 	require_once("./idleCheck.class.php");
+	require_once("./serverList.class.php");
 	class tsbot {
 		public $config;
 		public $server;
@@ -60,6 +61,8 @@
 
 		private function init() {
 			$this->idleCheck = new idleCheck($this);
+			$this->serverList = new serverList($this);
+			$this->server->serverSelectByPort($this->config['sport']);
 			$this->server->execute("clientupdate client_nickname=" . $this->escape($this->config['botNickName']));
 			$this->server->execute("clientmove clid=" . $this->server->whoamiGet("client_id") . " cid=" . $this->config['botCh']);
 
@@ -78,9 +81,8 @@
 			$this->getNewServerInfo();
 			$this->idleCheck();
 			$this->functionRooms();
-/*			$this->setNormalUsers();
+//			$this->setNormalUsers();
 			$this->createList();
-			*/
 		}
 
 		private function getNewServerInfo() {
@@ -108,6 +110,10 @@
 					unset($this->functionRooms[$roomId]);
 				}
 			}
+		}
+
+		private function createList() {
+			$this->serverList->tick();
 		}
 
 		public function escape($string, $unescape = false) {

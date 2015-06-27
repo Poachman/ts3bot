@@ -1,23 +1,30 @@
 <?php
 	class functionRoom {
-		protected $channelId;
+		protected $channel;
 		protected $admin;
 		protected $bot;
 
-		public function functionRoom(&$server, $channelAdmin, &$bot) {
+		public function functionRoom($channelAdmin, &$bot) {
 			$this->bot = $bot;
 			$this->admin = $channelAdmin;
-			$this->channel = $server->channelCreate(array(
+			$this->channel = $this->bot->server->channelCreate(array(
 				"channel_name"				=> "{$this->admin->getProperty("client_nickname")}'s Room",
 				"cpid"						=> $this->bot->config['fnRoomSpacerId'],
 				"channel_flag_permanent"	=> "1"
 			));
-			$this->admin->move($this->channel);
-			$this->admin->setChannelGroup($this->channel, $this->bot->config['channelAdminGroupId']);
+			$this->channel = current($this->bot->server->channelList(array("cid" => $this->channel)));
+			$this->admin->move($this->channel->getProperty("cid"));
+			$this->admin->setChannelGroup($this->channel->getProperty("cid"), $this->bot->config['channelAdminGroupId']);
+		}
+
+		private function isDead() {
+			return $this->channel->getProperty("seconds_empty") > $this->bot->config['fnRoomRestTime'];
 		}
 
 		public function tick() {
-
+			if($this->isDead()) {
+				$this->delete();
+			}
 		}
 	}
 ?>

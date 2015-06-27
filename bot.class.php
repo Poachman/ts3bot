@@ -3,7 +3,7 @@
 	require_once("./functionRoom.class.php");
 	class tsbot {
 		public $config;
-		private $server;
+		public $server;
 		private $clients;
 		private $lcid = array();
 		private $functionRooms = array();
@@ -61,6 +61,11 @@
 			// TODO - Change bot name & move bot to another cahnnel
 //			$this->cmd("clientupdate client_nickname=" . $this->escape($this->config['botNickName']));
 //			$this->cmd("clientmove clid=" . $this->whoami[0]['client_id'] . " cid=" . $this->config['botCh']);
+/*			$bot = $this->server->getParent()->whoami();
+			$bot = current($this->server->clientList(array("client_database_id" => $bot['client_database_id'])));
+			$bot->move($this->config['botCh']);
+//			$bot->modify(array("client_nickname" => $this->config['botNickName']));
+*/
 
 			$this->getNewServerInfo();
 		}
@@ -92,8 +97,8 @@
 			if($client->getProperty("client_type") === 0) {
 					$idletime = $this->config['idletime']['normal'];
 
-					if($client['client_away'])
-						$idletime = $this->config['idletime']['away'];
+					if($client['client_channel_group_id'] == $this->config['channelAdminGroupId'])
+						$idletime = $this->config['idletime']['admin'];
 
 					if($client['client_input_muted'])
 						$idletime = $this->config['idletime']['muted'];
@@ -101,8 +106,8 @@
 					if($client['client_output_muted'])
 						$idletime = $this->config['idletime']['deafened'];
 
-					if($client['client_channel_group_id'] == $this->config['channelAdminGroupId'])
-						$idletime = $this->config['idletime']['admin'];
+					if($client['client_away'])
+						$idletime = $this->config['idletime']['away'];
 
 					return $idletime < $client->getProperty("client_idle_time");
 			} else {
@@ -139,7 +144,7 @@
 			$functionRoom = $this->server->channelList(array("cid" => $this->config['newFnRoomId']))[$this->config['newFnRoomId']];
 
 			foreach($functionRoom->clientList() as $client) {
-				$this->functionRooms[] = new functionRoom($this->server, $client, $this);
+				$this->functionRooms[] = new functionRoom($client, $this);
 			}
 
 			foreach($this->functionRooms as $functionRoom) {

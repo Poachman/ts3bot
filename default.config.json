@@ -13,7 +13,12 @@
 "newFnRoomId" : "4",
 "fnRoomSpacerId" : "3",
 "fnRoomRestTime" : "90",
+"channelAdminGroupId" : "5",
 
+"botCh" : "4",
+"botNickName" : "The Magical Bot",
+
+"lobbyCh" : "1",
 "idleCh"    : "2",
 "idletime" : {
     "muted" : "600000",
@@ -24,12 +29,8 @@
 },
 
 
-"lobbyCh" : "1",
-"botCh" : "12",
-"channelAdminGroupId" : "5",
 "channelGuestGroupId" : "8",
 "channelBanGroupId" : "10",
-"botNickName" : "The Magical Bot",
 "setNormalTime" : "7200",
 "NormalGroupId" : "7",
 "GuestGroupId" : "8"

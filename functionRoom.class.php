@@ -17,14 +17,18 @@
 			$this->admin->setChannelGroup($this->channel->getProperty("cid"), $this->bot->config['channelAdminGroupId']);
 		}
 
-		private function isDead() {
-			return $this->channel->getProperty("seconds_empty") > $this->bot->config['fnRoomRestTime'];
-		}
-
 		public function tick() {
 			if($this->isDead()) {
 				$this->delete();
 			}
+		}
+
+		private function isDead() {
+			return $this->channel->getProperty("seconds_empty") > $this->bot->config['fnRoomRestTime'];
+		}
+
+		private function delete() {
+			$this->channel->delete();
 		}
 	}
 ?>

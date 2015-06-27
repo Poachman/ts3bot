@@ -6,7 +6,6 @@
 		public $config;
 		public $server;
 		private $clients;
-		private $lcid = array();
 		private $functionRooms = array();
 		private $idleCheck = NULL;
 
@@ -61,14 +60,8 @@
 
 		private function init() {
 			$this->idleCheck = new idleCheck($this);
-			// TODO - Change bot name & move bot to another cahnnel
-//			$this->cmd("clientupdate client_nickname=" . $this->escape($this->config['botNickName']));
-//			$this->cmd("clientmove clid=" . $this->whoami[0]['client_id'] . " cid=" . $this->config['botCh']);
-/*			$bot = $this->server->getParent()->whoami();
-			$bot = current($this->server->clientList(array("client_database_id" => $bot['client_database_id'])));
-			$bot->move($this->config['botCh']);
-//			$bot->modify(array("client_nickname" => $this->config['botNickName']));
-*/
+			$this->server->execute("clientupdate client_nickname=" . $this->escape($this->config['botNickName']));
+			$this->server->execute("clientmove clid=" . $this->server->whoamiGet("client_id") . " cid=" . $this->config['botCh']);
 
 			$this->getNewServerInfo();
 		}
@@ -115,6 +108,19 @@
 					unset($this->functionRooms[$roomId]);
 				}
 			}
+		}
+
+		public function escape($string, $unescape = false) {
+			$escaped = array('\\\\', "\/", "\s", "\p", "\a", "\b", "\f", "\n", "\r", "\t", "\v");
+			$unescaped = array(chr(92), chr(47), chr(32), chr(124), chr(7), chr(8), chr(12), chr(10), chr(3), chr(9), chr(11));
+			if($unescape)
+				return str_replace($escaped, $unescaped, $string);
+			else
+				return str_replace($unescaped, $escaped, $string);
+		}
+
+		public function unescape($string) {
+			return $this->escape($string, true);
 		}
 
 		public function log($string, $level = 0, $cmd = false) {

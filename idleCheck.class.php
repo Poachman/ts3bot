@@ -1,6 +1,7 @@
 <?php
 class idleCheck {
 	protected $bot;
+  private $lcid = array();
 
 	public function idleCheck(&$bot) {
 		$this->bot = $bot;
@@ -8,17 +9,19 @@ class idleCheck {
 
 	public function tick(&$clients) {
     foreach($clients as $client) {
-      if($client->getProperty("cid") != $this->bot->config['idleCh']) {
-        if($this->isIdle($client)) {
-          $this->lcid[$client->getProperty("cldbid")] = $client->getProperty("cid");
-          $client->move($this->bot->config['idleCh']);
-        }
-      } else {
-        if(!($this->isIdle($client) || $this->isMuted($client))) {
-          if(array_key_exists($client->getProperty("cldbid"), $this->lcid)) {
-            $client->move($this->lcid[$client->getProperty("cldbid")]);
-          } else {
-            $client->move($this->bot->config['lobbyCh']);
+      if($client->getProperty("client_type") == 0) {
+        if($client->getProperty("cid") != $this->bot->config['idleCh']) {
+          if($this->isIdle($client)) {
+            $this->lcid[$client->getProperty("cldbid")] = $client->getProperty("cid");
+            $client->move($this->bot->config['idleCh']);
+          }
+        } else {
+          if(!($this->isIdle($client) || $this->isMuted($client))) {
+            if(array_key_exists($client->getProperty("cldbid"), $this->lcid)) {
+              $client->move($this->lcid[$client->getProperty("cldbid")]);
+            } else {
+              $client->move($this->bot->config['lobbyCh']);
+            }
           }
         }
       }

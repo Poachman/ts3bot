@@ -97,11 +97,25 @@
 			$this->idleCheck->tick($this->clients);
 		}
 
+		private function hasFunctionRoom($client) {
+			foreach ($this->functionRooms as $roomId => $functionRoom) {
+				if($functionRoom->getAdmin()->getUniqueid() == $client->getUniqueid()) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		private function functionRooms() {
 			$functionRoom = $this->server->channelList(array("cid" => $this->config['newFnRoomId']))[$this->config['newFnRoomId']];
 
 			foreach($functionRoom->clientList() as $client) {
-				$this->functionRooms[] = new functionRoom($client, $this);
+				if(!$this->hasFunctionRoom($client)) {
+					$this->functionRooms[] = new functionRoom($client, $this);
+				} else {
+					$client->kick(TeamSpeak3::KICK_CHANNEL);
+					$client->poke("You already have a function room.  You don't get another...");
+				}
 			}
 
 			foreach($this->functionRooms as $roomId => $functionRoom) {

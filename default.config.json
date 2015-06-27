@@ -5,8 +5,11 @@
 "port"      : "10011",
 "sport"     : "9987",
 
+"debug"     : false,
+
 "brain"     : "./botbrain",
 "logFile"   : "./bot.log",
+"listFile"  : "./list",
 
 "loopTime"  : "1",
 

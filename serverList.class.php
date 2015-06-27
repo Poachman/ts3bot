@@ -1,11 +1,11 @@
 <?php
 class serverList {
 	protected $bot;
-	private $viewer;
+  private $viewer;
 
 	public function serverList(&$bot) {
 		$this->bot = $bot;
-		$this->viewer = new TeamSpeak3_Viewer_Html("r/img/ts/", "r/img/ts/countryflags/", "data:image");
+  	$this->viewer = new TeamSpeak3_Viewer_Html("r/img/ts/", "r/img/ts/countryflags/", "data:image");
 	}
 
 	public function tick() {

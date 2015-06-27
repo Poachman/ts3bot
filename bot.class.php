@@ -1,4 +1,5 @@
 <?php
+	error_reporting(E_ALL);
 	require_once("./libraries/TeamSpeak3/TeamSpeak3.php");
 	require_once("./functionRoom.class.php");
 	require_once("./idleCheck.class.php");

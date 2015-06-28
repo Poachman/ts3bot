@@ -100,7 +100,7 @@
 
 		private function hasFunctionRoom($client) {
 			foreach ($this->functionRooms as $roomId => $functionRoom) {
-				if($functionRoom->getAdmin()->getProperty("cldbid") == $client->getProperty("cldbid")) {
+				if($functionRoom->getAdmin()->getProperty("client_database_id") === $client->getProperty("client_database_id")) {
 					return true;
 				}
 			}

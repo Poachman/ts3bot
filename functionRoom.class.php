@@ -23,13 +23,14 @@
 		}
 
 		public function tick() {
+			$this->channel->resetNodeInfo();
 			if($this->isDead()) {
 				$this->kill();
 			}
 		}
 
 		private function kill() {
-			$this->bot->log($this->channel->getProperty("channel_name") . " had died.");
+			$this->bot->log($this->channel->getProperty("channel_name") . " has died.");
 			$this->alive = false;
 			$this->delete();
 		}
@@ -39,7 +40,6 @@
 		}
 
 		private function isDead() {
-			$this->channel->getInfo();
 			$this->bot->log("Seconds empty: " . $this->channel->getProperty("seconds_empty") . " - cid=" . $this->channel->getProperty("cid"));
 			return $this->channel->getProperty("seconds_empty") > $this->bot->config['fnRoomRestTime'];
 		}

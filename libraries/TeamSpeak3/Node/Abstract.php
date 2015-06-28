@@ -446,7 +446,7 @@ abstract class TeamSpeak3_Node_Abstract implements RecursiveIterator, ArrayAcces
   /**
    * @ignore
    */
-  protected function resetNodeInfo()
+  public function resetNodeInfo()
   {
     $this->nodeInfo = array();
   }

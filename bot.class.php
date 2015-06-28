@@ -84,14 +84,15 @@
 			$this->idleCheck();
 			$this->functionRooms();
 //			$this->setNormalUsers();
-			$this->createList();
+			if(filemtime($this->config['listFile']) >= 30) {
+				$this->createList();
+			}
 		}
 
 		private function getNewServerInfo() {
-			$this->server->clientListReset();
 			$this->server->channelListReset();
+			$this->server->clientListReset();
 			$this->clients = $this->server->clientList();
-			$this->log("Updated Server Info");
 		}
 
 		private function idleCheck() {

@@ -64,6 +64,7 @@
 			$this->idleCheck = new idleCheck($this);
 			$this->serverList = new serverList($this);
 			$this->server->serverSelectByPort($this->config['sport']);
+			$this->log("Server Port: " . $this->server->serverSelectedPort());
 			$this->server->execute("clientupdate client_nickname=" . $this->escape($this->config['botNickName']));
 			$this->server->execute("clientmove clid=" . $this->server->whoamiGet("client_id") . " cid=" . $this->config['botCh']);
 
@@ -75,7 +76,7 @@
 		}
 
 		private function tick() {
-			$brain = file($this->config['brain']);
+//			$brain = file($this->config['brain']);
 	/*		foreach($brain as $command) {
 				$this->brainCommand($command);
 			}*/

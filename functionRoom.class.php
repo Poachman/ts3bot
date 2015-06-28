@@ -39,7 +39,8 @@
 		}
 
 		private function isDead() {
-			$this->bot->log("Idle: " . $this->channel->getProperty("seconds_empty"));
+			$this->channel->getInfo();
+			$this->bot->log("Seconds empty: " . $this->channel->getProperty("seconds_empty") . " - cid=" . $this->channel->getProperty("cid"));
 			return $this->channel->getProperty("seconds_empty") > $this->bot->config['fnRoomRestTime'];
 		}
 

@@ -133,6 +133,10 @@
 			$this->serverList->tick();
 		}
 
+		public function channelExists($cid) {
+			return array_key_exists($cid, $this->server->channelList(array("cid" => $cid)));
+		}
+
 		public function escape($string, $unescape = false) {
 			$escaped = array('\\\\', "\/", "\s", "\p", "\a", "\b", "\f", "\n", "\r", "\t", "\v");
 			$unescaped = array(chr(92), chr(47), chr(32), chr(124), chr(7), chr(8), chr(12), chr(10), chr(3), chr(9), chr(11));
@@ -152,13 +156,12 @@
 			if($level > 0 || $this->config['debug'] == true) {
 				$string .= "\n";
 				echo $string;
-				explode("\n", $string);
 				if(file_exists($this->config['logFile'])) {
 					$log = file($this->config['logFile']);
 				}
 				$log[] = $string;
 				implode("\n", $log);
-				file_put_contents($this->config['logFile'], $log);
+				echo file_put_contents($this->config['logFile'], $log);
 			}
 			if($level > 5) {
 				die();

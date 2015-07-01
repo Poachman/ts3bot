@@ -8,17 +8,19 @@ class idleCheck {
 	}
 
 	public function tick(&$clients) {
+		print_r($this->lcid);
 		foreach($clients as $client) {
 			if($client->getProperty("client_type") == 0) {
 				if($client->getProperty("cid") != $this->bot->config['idleCh']) {
 					if($this->isIdle($client)) {
-						$this->lcid[$client->getProperty("cldbid")] = $client->getProperty("cid");
+						$this->lcid[$client->getProperty("client_database_id")] = $client->getProperty("cid");
 						$client->move($this->bot->config['idleCh']);
 					}
 				} else {
 					if(!($this->isIdle($client) || $this->isMuted($client))) {
-						if(array_key_exists($client->getProperty("cldbid"), $this->lcid)) {
-							$client->move($this->lcid[$client->getProperty("cldbid")]);
+						if(array_key_exists($client->getProperty("client_database_id"), $this->lcid)
+						&& $this->bot->channelExists($this->lcid[$client->getProperty("client_database_id")])) {
+							$client->move($this->lcid[$client->getProperty("client_database_id")]);
 						} else {
 							$client->move($this->bot->config['lobbyCh']);
 						}

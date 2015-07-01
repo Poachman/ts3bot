@@ -8,7 +8,6 @@ class idleCheck {
 	}
 
 	public function tick(&$clients) {
-		print_r($this->lcid);
 		foreach($clients as $client) {
 			if($client->getProperty("client_type") == 0) {
 				if($client->getProperty("cid") != $this->bot->config['idleCh']) {

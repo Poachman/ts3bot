@@ -33,7 +33,7 @@
 		private function banCheck() {
 			$bannedClients = $this->channel->clientList(array("client_channel_group_id" => $this->bot->config['channelBanGroupId']));
 			foreach ($bannedClients as $client) {
-				$client->kick(TeamSpeak3::KICK_CHANNEL, "Banned from channel" . $this->channel->getProperty('name'));
+				$client->kick(TeamSpeak3::KICK_CHANNEL, "Banned from channel " . $this->channel->getProperty('channel_name'));
 			}
 		}
 
